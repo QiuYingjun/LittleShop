@@ -1,0 +1,5 @@
+**/__pycache__
+server/.venv
+server/instance
+client/.expo
+client/node_modules

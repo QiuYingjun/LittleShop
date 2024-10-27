@@ -1,0 +1,113 @@
+
+###
+GET http://127.0.0.1:5000/suppliers
+###
+POST http://127.0.0.1:5000/suppliers
+content-type: application/json
+
+{
+    "name": "BIG-A",
+    "address": "2 Chome-26-8 Ayase, Adachi City, Tokyo 120-0005"
+}
+###
+PUT http://127.0.0.1:5000/suppliers/1 
+content-type: application/json
+
+{
+    "name": "BIG-AA",
+    "address": "2 Chome-26-8 Ayase, Adachi City, Tokyo 120-0005"
+}
+
+
+###
+DELETE http://127.0.0.1:5000/suppliers/1
+
+###
+GET http://127.0.0.1:5000/products
+
+###
+
+POST http://127.0.0.1:5000/products
+content-type: application/json
+
+{
+    "name": "プッカ",
+    "size": "30g",
+    "tags": "零食",
+    "image_url": "https://www.calbee.co.jp/jagarico/products/detail/sarad",
+    "description": ""
+}
+###
+GET http://127.0.0.1:5000/products/2
+###
+PUT  http://127.0.0.1:5000/products/1
+content-type: application/json
+
+{
+    "size": "58g/pack"
+}
+
+###
+DELETE http://127.0.0.1:5000/products/1
+
+###
+GET http://127.0.0.1:5000/inventory_summary
+
+###
+GET http://127.0.0.1:5000/inventory_records
+###
+POST http://127.0.0.1:5000/inventory_records
+content-type: application/json
+
+{
+    "product_id": 4,
+    "supplier_id": 1,
+    "purchase_price": 40,
+    "quantity":10
+}
+###
+PUT http://127.0.0.1:5000/inventory_records/5
+content-type: application/json
+
+{
+    "product_id": 2,
+    "supplier_id": 1,
+    "purchase_price": 1000
+}
+
+###
+DELETE http://127.0.0.1:5000/inventory_records/5
+###
+POST http://127.0.0.1:5000/customers
+content-type: application/json
+
+{
+    "name": "ACD"
+}
+### 
+GET http://127.0.0.1:5000/customers
+### 
+PUT http://127.0.0.1:5000/customers/1
+content-type: application/json
+
+{
+    "name": "ACD3"
+}
+### 
+DELETE  http://127.0.0.1:5000/customers/1
+
+###
+POST http://127.0.0.1:5000/sales_records
+content-type: application/json
+
+{
+
+    "product_id": 4,
+    "customer_id": 2,
+    "price": 120,
+    "quantity": 14,
+    "points_used": 9
+}
+
+###
+GET http://127.0.0.1:5000/sales_records
