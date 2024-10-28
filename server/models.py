@@ -78,22 +78,42 @@ class Customer(db.Model):
         return {"id": self.id, "name": self.name, "points": self.points}
 
 
+class Order(db.Model):
+    __tablename__ = "order"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey("customer.id"), nullable=False)
+    points_used = db.Column(db.Integer, nullable=False, default=0)
+    points_earned = db.Column(db.Integer, nullable=False, default=0)
+    total_price = db.Column(db.Float, nullable=False)
+    customer = db.relationship("Customer", backref=db.backref("orders", lazy=True))
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "customer_id": self.customer_id,
+            "points_used": self.points_used,
+            "points_earned": self.points_earned,
+            "total_price": self.total_price,
+        }
+
+
 class SalesRecord(db.Model):
     __tablename__ = "sales_record"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     customer_id = db.Column(db.Integer, db.ForeignKey("customer.id"), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey("order.id"), nullable=False)
+
     sale_date = db.Column(db.DateTime, default=datetime.utcnow)
     price = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
-    points_used = db.Column(db.Integer, nullable=False, default=0)
-    points_earned = db.Column(db.Integer, nullable=False, default=0)
 
     product = db.relationship("Product", backref=db.backref("sales_records", lazy=True))
     customer = db.relationship(
         "Customer", backref=db.backref("sales_records", lazy=True)
     )
+    order = db.relationship("Order", backref=db.backref("sales_records", lazy=True))
 
     def to_dict(self):
         return {
@@ -103,8 +123,7 @@ class SalesRecord(db.Model):
             "sale_date": self.sale_date.isoformat() if self.sale_date else None,
             "price": self.price,
             "quantity": self.quantity,
-            "points_used": self.points_used,
-            "points_earned": self.points_earned,
+            "order_id": self.order_id,
         }
 
 

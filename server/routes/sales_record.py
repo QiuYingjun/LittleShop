@@ -48,24 +48,13 @@ def create_sales_record():
         return {"error": "not enough stock"}, 400
 
     price = request.json["price"]
-    points_used = request.json.get("points_used", 0)
-    points_earned = request.json.get(
-        "points_earned", (price * quantity - points_used) // 100
-    )
-    customer_id = request.json["customer_id"]
-    if points_earned > 0 or points_used > 0:
-        customer = Customer.query.get(customer_id)
-        if points_used > customer.points:
-            return {"error": "not enouth points"}, 400
-        customer.points = customer.points - points_used + points_earned
 
+    customer_id = request.json["customer_id"]
     new_record = SalesRecord(
         product_id=product_id,
         customer_id=customer_id,
         price=price,
         quantity=quantity,
-        points_used=points_used,
-        points_earned=points_earned,
     )
     db.session.add(new_record)
     db.session.commit()

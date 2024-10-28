@@ -60,9 +60,9 @@ POST http://127.0.0.1:5000/inventory_records
 content-type: application/json
 
 {
-    "product_id": 4,
+    "product_id": 1,
     "supplier_id": 1,
-    "purchase_price": 40,
+    "purchase_price": 96,
     "quantity":10
 }
 ###
@@ -82,7 +82,7 @@ POST http://127.0.0.1:5000/customers
 content-type: application/json
 
 {
-    "name": "ACD"
+    "name": "高健"
 }
 ### 
 GET http://127.0.0.1:5000/customers
@@ -91,7 +91,7 @@ PUT http://127.0.0.1:5000/customers/1
 content-type: application/json
 
 {
-    "name": "ACD3"
+    "name": "高健"
 }
 ### 
 DELETE  http://127.0.0.1:5000/customers/1
@@ -111,3 +111,22 @@ content-type: application/json
 
 ###
 GET http://127.0.0.1:5000/sales_records
+
+###
+GET http://127.0.0.1:5000/orders
+###
+POST http://127.0.0.1:5000/orders
+content-type: application/json
+
+{
+"sales_records":[{
+    "product_id": 1,
+    "customer_id": 1,
+    "price": 120,
+    "quantity": 1
+}],
+"customer_id":1
+}
+
+###
+DELETE http://127.0.0.1:5000/orders/6

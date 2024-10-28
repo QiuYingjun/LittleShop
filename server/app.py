@@ -5,6 +5,7 @@ from routes.supplier import supplier_bp
 from routes.inventory_record import inventory_bp  # 导入库存记录路由
 from routes.customer import customer_bp  # 导入顾客路由
 from routes.sales_record import sales_bp  # 导入销售记录路由
+from routes.order import order_bp  # 导入销售记录路由
 
 
 app = Flask(__name__)
@@ -24,6 +25,7 @@ app.register_blueprint(supplier_bp)
 app.register_blueprint(inventory_bp)
 app.register_blueprint(customer_bp)
 app.register_blueprint(sales_bp)
+app.register_blueprint(order_bp)
 
 if __name__ == "__main__":
     app.run(debug=True)
