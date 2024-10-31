@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from sqlalchemy import event
 from sqlalchemy.sql import text
 
 db = SQLAlchemy()

@@ -14,7 +14,7 @@ PUT http://127.0.0.1:5000/suppliers/1
 content-type: application/json
 
 {
-    "name": "BIG-AA",
+    "name": "BIG-A",
     "address": "2 Chome-26-8 Ayase, Adachi City, Tokyo 120-0005"
 }
 
