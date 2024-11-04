@@ -1,6 +1,6 @@
 
 ###
-GET http://127.0.0.1:5000/suppliers
+GET http://192.168.3.3:5000/suppliers
 ###
 POST http://127.0.0.1:5000/suppliers
 content-type: application/json
