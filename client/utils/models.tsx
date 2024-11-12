@@ -14,60 +14,76 @@ const getHost = async () => {
 
 abstract class ModalBase<T> {
   abstract path: string;
-  create = async (fields: Omit<T, "id">) => {
+  create: (fields: Omit<T, "id">) => Promise<T> = async (
+    fields: Omit<T, "id">
+  ) => {
     const host = await getHost();
-    console.log(19, `${host}/${this.path}`);
     const result = await axios
       .post(`${host}/${this.path}`, fields)
       .then(({ data }) => {
-        console.log(31, data);
-        return data;
+        return data as T;
       });
-    return result;
+    return result as T;
   };
-  all = async () => {
+  all: () => Promise<T[]> = async () => {
     const host = await getHost();
     const result = await axios
       .get(`${host}/${this.path}`)
       .then(({ data }) => {
-        console.log(31, data);
-        return data;
+        return data as T[];
       })
       .catch((e) => {
-        console.log(36, e);
+        console.log(37, e);
+        return [];
       });
     return result;
   };
-  get = async (id: number) => {
+  get: (id: number) => Promise<T | null> = async (id: number) => {
     const host = await getHost();
     const result = await axios
       .get(`${host}/${this.path}/${id}`)
       .then(({ data }) => {
-        console.log(31, data);
-        return data;
+        return data as T;
       })
       .catch((e) => {
-        console.log(36, e);
+        console.log(50, e);
+        return null;
       });
     return result;
   };
-  update = async (id: number, fields: Omit<T, "id">) => {
+  update: (id: number, fields: Omit<T, "id">) => Promise<T | null> = async (
+    id: number,
+    fields: Omit<T, "id">
+  ) => {
     const host = await getHost();
     const result = await axios
-      .put(`${host}/suppliers/${id}`, fields)
+      .put(`${host}/${this.path}/${id}`, fields)
       .then(({ data }) => {
-        console.log(31, data);
-        return data;
+        return data as T;
       })
       .catch((e) => {
-        console.log(36, e);
+        console.log(63, e);
+        return null;
+      });
+    return result;
+  };
+  delete: (id: number) => Promise<T | null> = async (id: number) => {
+    const host = await getHost();
+    const result = await axios
+      .delete(`${host}/${this.path}/${id}`)
+      .then(({ data }) => {
+        return data as T;
+      })
+      .catch((e) => {
+        console.log(63, e);
+        return null;
       });
     return result;
   };
 }
 
-type SupplierAttributes = {
-  id: number;
+export type SupplierAttributes = {
+  id?: number;
   name: string;
   address?: string;
 };

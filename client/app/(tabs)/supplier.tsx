@@ -1,16 +1,36 @@
 import SaveRecordModal from "@/components/SaveRecordModal";
-import { Supplier } from "@/utils/models";
-import React, { useEffect, useState } from "react";
-import { View, Button, ToastAndroid } from "react-native";
+import { Supplier, SupplierAttributes } from "@/utils/models";
+import React, { useEffect, useMemo, useState } from "react";
+import { ToastAndroid, FlatList } from "react-native";
+import { useNavigation } from "expo-router";
+import { Button, ListItem } from "@rneui/themed";
 
 export default function SupplierScreen() {
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title="添加"
+          type="clear"
+          onPress={() => {
+            setShowModal(true);
+          }}
+        />
+      ),
+    });
+    return () => {
+      navigation.setOptions({
+        headerRight: undefined,
+      });
+    };
+  }, [navigation]);
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [suppliers, setSuppliers] = useState([]);
+  const [suppliers, setSuppliers] = useState<SupplierAttributes[]>([]);
   const loadSuppliers = () => {
     Supplier.all().then((res) => {
-      console.log(13, res);
       setSuppliers(res);
     });
   };
@@ -24,17 +44,17 @@ export default function SupplierScreen() {
     if (name) {
       return await Supplier.create({ name, address })
         .then((res) => {
-          console.log(20, res);
           alert("保存成功");
           setShowModal(false);
-          setName("");
-          setAddress("");
+          setRecord({
+            name: "",
+            address: "",
+          });
           loadSuppliers();
           return true;
         })
         .catch((e) => {
           ToastAndroid.show(e.message, ToastAndroid.SHORT);
-          console.log(36, e);
           return false;
         });
     } else {
@@ -42,37 +62,89 @@ export default function SupplierScreen() {
       return false;
     }
   };
-
+  const deleteRecord = (id: number) => {
+    Supplier.delete(id).then((res) => {
+      alert("删除成功");
+      loadSuppliers();
+    });
+  };
+  const updateRecord = (data: { key: string; value: string }[], id: number) => {
+    const a: { [key: string]: any } = {};
+    data.forEach((it) => {
+      a[it.key] = it.value;
+    });
+    Supplier.update(id, a as SupplierAttributes).then((res) => {
+      setShowModal(false);
+      loadSuppliers();
+    });
+  };
+  const [record, setRecord] = useState<SupplierAttributes>();
+  const modalFields = useMemo(() => {
+    return [
+      {
+        label: "名称",
+        key: "name",
+        value: record?.name || "",
+      },
+      {
+        label: "地址",
+        key: "address",
+        value: record?.address || "",
+      },
+    ];
+  }, [record]);
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button
-        title="添加"
-        onPress={() => {
-          setShowModal(true);
+    <>
+      <FlatList
+        style={{ width: "100%" }}
+        data={suppliers}
+        keyExtractor={(_, index: number) => index.toString()}
+        renderItem={({ item }) => {
+          return (
+            <ListItem.Swipeable
+              key={item.id}
+              bottomDivider
+              rightContent={
+                <Button
+                  title="删除"
+                  color="error"
+                  icon={{ name: "delete", color: "white" }}
+                  buttonStyle={{ minHeight: "100%" }}
+                  onPress={() => {
+                    deleteRecord(item.id!);
+                  }}
+                />
+              }
+              onPress={() => {
+                setRecord(item);
+                setShowModal(true);
+              }}
+            >
+              <ListItem.Content>
+                <ListItem.Title>{item.name}</ListItem.Title>
+                <ListItem.Subtitle>{item.address}</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem.Swipeable>
+          );
         }}
-      />
+      ></FlatList>
+
       <SaveRecordModal
         visible={showModal}
         title={"新建供货商"}
-        fields={[
-          {
-            label: "名称",
-            key: "name",
-            value: name,
-          },
-          {
-            label: "地址",
-            key: "address",
-            value: address,
-          },
-        ]}
+        fields={modalFields}
+        id={record?.id}
         onCancel={() => {
           setShowModal(false);
         }}
-        onSave={(data) => {
-          saveRecord(data);
+        onSave={(data, id) => {
+          if (id) {
+            updateRecord(data, id);
+          } else {
+            saveRecord(data);
+          }
         }}
       ></SaveRecordModal>
-    </View>
+    </>
   );
 }
