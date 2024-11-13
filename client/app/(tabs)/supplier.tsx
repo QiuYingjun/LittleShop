@@ -1,9 +1,10 @@
 import SaveRecordModal from "@/components/SaveRecordModal";
 import { Supplier, SupplierAttributes } from "@/utils/models";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ToastAndroid, FlatList } from "react-native";
 import { useNavigation } from "expo-router";
 import { Button, ListItem } from "@rneui/themed";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function SupplierScreen() {
   const navigation = useNavigation();
@@ -14,6 +15,10 @@ export default function SupplierScreen() {
           title="添加"
           type="clear"
           onPress={() => {
+            setRecord({
+              name: "",
+              address: "",
+            });
             setShowModal(true);
           }}
         />
@@ -25,18 +30,19 @@ export default function SupplierScreen() {
       });
     };
   }, [navigation]);
+
   const [showModal, setShowModal] = useState(false);
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
   const [suppliers, setSuppliers] = useState<SupplierAttributes[]>([]);
   const loadSuppliers = () => {
     Supplier.all().then((res) => {
       setSuppliers(res);
     });
   };
-  useEffect(() => {
-    loadSuppliers();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadSuppliers();
+    }, [])
+  );
 
   const saveRecord = async (data: { key: string; value: string }[]) => {
     const name = data.find((it) => it.key == "name")?.value;
@@ -46,10 +52,6 @@ export default function SupplierScreen() {
         .then((res) => {
           alert("保存成功");
           setShowModal(false);
-          setRecord({
-            name: "",
-            address: "",
-          });
           loadSuppliers();
           return true;
         })

@@ -1,6 +1,5 @@
-import { View, Modal, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Input, Button, Card } from "@rneui/themed";
+import { Input, Dialog } from "@rneui/themed";
 
 interface SaveRecordModalType {
   visible: boolean;
@@ -33,63 +32,36 @@ export default function SaveRecordModal(props: SaveRecordModalType) {
     setFields(newFields);
   };
   return (
-    <Modal
-      hardwareAccelerated
-      visible={props.visible}
-      onRequestClose={props.onCancel}
-      transparent={true}
-      animationType="fade"
-    >
-      <View style={styles.box}>
-        <Card containerStyle={{ width: "100%" }}>
-          <Card.Title h4>{props.title}</Card.Title>
-          {fields.map((it) => {
-            return (
-              <Input
-                placeholder={it.label}
-                onChangeText={(t) => {
-                  putValue(it.key, t);
-                }}
-                value={it.value}
-                key={it.key}
-              ></Input>
-            );
-          })}
-          <View style={styles.actions}>
-            <Button
-              title="  取消  "
-              type="outline"
-              size="md"
-              onPress={() => {
-                props.onCancel();
+    <>
+      <Dialog isVisible={props.visible} onBackdropPress={props.onCancel}>
+        <Dialog.Title title={props.title} />
+        {fields.map((it) => {
+          return (
+            <Input
+              placeholder={it.label}
+              onChangeText={(t) => {
+                putValue(it.key, t);
               }}
-            />
-            <Button
-              title="  保存  "
-              size="md"
-              onPress={() => {
-                props.onSave(fields, props.id);
-              }}
-            />
-          </View>
-        </Card>
-      </View>
-    </Modal>
+              value={it.value}
+              key={it.key}
+            ></Input>
+          );
+        })}
+        <Dialog.Actions>
+          <Dialog.Button
+            title="保存"
+            onPress={() => {
+              props.onSave(fields, props.id);
+            }}
+          />
+          <Dialog.Button
+            title="取消"
+            onPress={() => {
+              props.onCancel();
+            }}
+          />
+        </Dialog.Actions>
+      </Dialog>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  box: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#000000aa",
-    padding: 10,
-  },
-  actions: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    gap: 20,
-  },
-});

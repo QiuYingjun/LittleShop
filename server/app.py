@@ -6,9 +6,11 @@ from routes.inventory_record import inventory_bp  # 导入库存记录路由
 from routes.customer import customer_bp  # 导入顾客路由
 from routes.sales_record import sales_bp  # 导入销售记录路由
 from routes.order import order_bp  # 导入销售记录路由
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+cors = CORS(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
