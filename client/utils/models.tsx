@@ -14,16 +14,17 @@ const getHost = async () => {
 
 abstract class ModalBase<T> {
   abstract path: string;
-  create: (fields: Omit<T, "id">) => Promise<T> = async (
-    fields: Omit<T, "id">
-  ) => {
+  create: (fields: Omit<T, "id">) => Promise<T | null> = async (fields: Omit<T, "id">) => {
     const host = await getHost();
     const result = await axios
       .post(`${host}/${this.path}`, fields)
       .then(({ data }) => {
         return data as T;
+      })
+      .catch((e) => {
+        return null;
       });
-    return result as T;
+    return result;
   };
   all: () => Promise<T[]> = async () => {
     const host = await getHost();
@@ -87,9 +88,103 @@ export type SupplierAttributes = {
   name: string;
   address?: string;
 };
+export type ProductAttributes = {
+  id?: number;
+  name: string;
+  size: string;
+  tags?: string;
+  image_url?: string;
+  description?: string;
+};
+export type InventoryRecordAttributes = {
+  id?: number;
+  product_id: number;
+  supplier_id: number;
+  quantity: number;
+  purchase_price: number;
+  purchase_time: Date;
+};
+export type CustomerAttributes = {
+  id?: number;
+  name: string;
+  points: number;
+};
+export type OrderAttributes = {
+  id?: number;
+  customer_id: number;
+  points_used: number;
+  points_earned: number;
+  total_price?: number;
+};
+export type SalesRecordAttributes = {
+  id?: number;
+  product_id: number;
+  customer_id: number;
+  order_id: number;
+  sale_date?: Date;
+  price: number;
+  quantity: number;
+};
+export type InventorySummaryAttributes = {
+  product_id: number;
+  product_name: number;
+  total_received: number;
+  total_sold: number;
+  current_stock: number;
+  last_purchase_time?: Date;
+  last_sale_time?: Date;
+  sale_price: number;
+};
 
 class SupplierClass extends ModalBase<SupplierAttributes> {
   path = "suppliers";
 }
+class ProductClass extends ModalBase<ProductAttributes> {
+  path = "products";
+}
+class InventoryRecordClass extends ModalBase<InventoryRecordAttributes> {
+  path = "inventory_records";
+}
+class CustomerClass extends ModalBase<CustomerAttributes> {
+  path = "customers";
+}
+class OrderClass extends ModalBase<OrderAttributes> {
+  path = "orders";
+  createWithRecords = async (
+    fields: OrderAttributes & { sales_records: SalesRecordAttributes[] }
+  ) => {
+    const host = await getHost();
+    const result = await axios
+      .post(`${host}/${this.path}`, fields)
+      .then(({ data }) => {
+        return data as OrderAttributes;
+      })
+      .catch((e) => {
+        return null;
+      });
+    return result;
+  };
+}
+class SalesRecordClass extends ModalBase<SalesRecordAttributes> {
+  path = "sales_records";
+}
+class InventorySummaryClass extends ModalBase<InventorySummaryAttributes> {
+  path = "inventory_summary";
+  update = () => {
+    throw new Error("can not use update on inventory_summary");
+  };
+  create = () => {
+    throw new Error("can not use create on inventory_summary");
+  };
+  delete = () => {
+    throw new Error("can not use delete on inventory_summary");
+  };
+}
 
 export const Supplier = new SupplierClass();
+export const Product = new ProductClass();
+export const InventoryRecord = new InventoryRecordClass();
+export const Customer = new CustomerClass();
+export const Order = new OrderClass();
+export const SalesRecord = new SalesRecordClass();
+export const InventorySummary = new InventorySummaryClass();

@@ -29,7 +29,8 @@ def create_customer():
         abort(400)
 
     new_customer = Customer(
-        name=request.json["name"], points=request.json.get("points", 0)  # 默认积分为 0
+        name=request.json["name"], points=request.json.get(
+            "points", 0)  # 默认积分为 0
     )
     db.session.add(new_customer)
     db.session.commit()

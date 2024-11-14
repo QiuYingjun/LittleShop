@@ -10,62 +10,76 @@ from sqlalchemy import select
 inventory_bp = Blueprint("inventory", __name__)
 
 
+def calc_inventsummary(row):
+    offset = 0
+    count = 0
+    for_calc = []
+    finish = False
+    while not finish:
+        print(offset)
+        latest_in = (
+            InventoryRecord.query.filter(
+                InventoryRecord.product_id == row.product_id
+            )
+            .order_by(InventoryRecord.purchase_time.desc())
+            .limit(5)
+            .offset(offset)
+            .all()
+        )
+        for r in latest_in:
+            count = count + r.quantity
+            for_calc.append(r)
+            print(r.id, r.quantity, r.purchase_price)
+            if count >= row.current_stock:
+                finish = True
+                break
+        else:
+            offset = offset + 5
+
+    sale_price = (
+        (
+            sum([t.quantity * t.purchase_price for t in for_calc], 0)
+            / sum([t.quantity for t in for_calc], 0)
+            * 1.1
+        )
+        // 10
+        + 1
+    ) * 10
+
+    return {
+        "product_id": row.product_id,
+        "product_name": row.product_name,
+        "total_received": row.total_received,
+        "total_sold": row.total_sold,
+        "current_stock": row.current_stock,
+        "last_purchase_time": row.last_purchase_time,
+        "last_sale_time": row.last_sale_time,
+        "sale_price": sale_price,
+    }
+
+
+@inventory_bp.route("/inventory_summary/<int:product_id>", methods=["GET"])
+def get_inventory_summary_record(product_id):
+    metadata = MetaData()
+    inventory_summary = db.Table(
+        "inventory_summary", metadata, autoload_with=db.engine)
+    stmt = select(inventory_summary).where(
+        inventory_summary.c.product_id == product_id)
+    result = []
+    for row in db.engine.connect().execute(stmt):
+        result.append(calc_inventsummary(row))
+    return result[0] if result else {}
+
+
 @inventory_bp.route("/inventory_summary", methods=["GET"])
 def get_inventory_summary():
     metadata = MetaData()
-    inventory_summary = db.Table("inventory_summary", metadata, autoload_with=db.engine)
+    inventory_summary = db.Table(
+        "inventory_summary", metadata, autoload_with=db.engine)
     stmt = select(inventory_summary)
     result = []
     for row in db.engine.connect().execute(stmt):
-        offset = 0
-
-        count = 0
-        for_calc = []
-        finish = False
-        while not finish:
-            print(offset)
-            latest_in = (
-                InventoryRecord.query.filter(
-                    InventoryRecord.product_id == row.product_id
-                )
-                .order_by(InventoryRecord.purchase_time.desc())
-                .limit(5)
-                .offset(offset)
-                .all()
-            )
-            for r in latest_in:
-                count = count + r.quantity
-                for_calc.append(r)
-                print(r.id, r.quantity, r.purchase_price)
-                if count >= row.current_stock:
-                    finish = True
-                    break
-            else:
-                offset = offset + 5
-
-        sale_price = (
-            (
-                sum([t.quantity * t.purchase_price for t in for_calc], 0)
-                / sum([t.quantity for t in for_calc], 0)
-                * 1.1
-            )
-            // 10
-            + 1
-        ) * 10
-
-        result.append(
-            {
-                "product_id": row.product_id,
-                "product_name": row.product_name,
-                "total_received": row.total_received,
-                "total_sold": row.total_sold,
-                "current_stock": row.current_stock,
-                "last_purchase_time": row.last_purchase_time,
-                "last_sale_time": row.last_sale_time,
-                "sale_price": sale_price,
-            }
-        )
-
+        result.append(calc_inventsummary(row))
     return result
 
 

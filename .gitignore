@@ -4,3 +4,4 @@ server/instance
 client/.expo
 client/node_modules
 instance
+.vscode

@@ -12,11 +12,9 @@ export default function Settings() {
   }, []);
 
   const handleSave = () => {
-    AsyncStorage.setItem("settings", JSON.stringify({ host: host })).then(
-      (res) => {
-        alert("保存成功");
-      }
-    );
+    AsyncStorage.setItem("settings", JSON.stringify({ host: host })).then((res) => {
+      alert("保存成功");
+    });
   };
   return (
     <View style={styles.container}>
