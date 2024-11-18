@@ -32,10 +32,10 @@ export default function SupplierScreen() {
   }, [navigation]);
 
   const [showModal, setShowModal] = useState(false);
-  const [suppliers, setSuppliers] = useState<SupplierAttributes[]>([]);
+  const [records, setRecords] = useState<SupplierAttributes[]>([]);
   const loadSuppliers = () => {
     Supplier.all().then((res) => {
-      setSuppliers(res);
+      setRecords(res);
     });
   };
   useFocusEffect(
@@ -99,7 +99,7 @@ export default function SupplierScreen() {
     <>
       <FlatList
         style={{ width: "100%" }}
-        data={suppliers}
+        data={records}
         keyExtractor={(_, index: number) => index.toString()}
         renderItem={({ item }) => {
           return (

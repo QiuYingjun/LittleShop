@@ -70,15 +70,9 @@ abstract class ModalBase<T> {
   };
   delete: (id: number) => Promise<T | null> = async (id: number) => {
     const host = await getHost();
-    const result = await axios
-      .delete(`${host}/${this.path}/${id}`)
-      .then(({ data }) => {
-        return data as T;
-      })
-      .catch((e) => {
-        console.log(63, e);
-        return null;
-      });
+    const result = await axios.delete(`${host}/${this.path}/${id}`).then(({ data }) => {
+      return data as T;
+    });
     return result;
   };
 }
