@@ -10,11 +10,16 @@ export default function Layout() {
         options={{
           title: "主页",
           tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={size}
-              color={color}
-            />
+            <Ionicons name={focused ? "home" : "home-outline"} size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inventory"
+        options={{
+          title: "进货",
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons name={focused ? "cube" : "cube-outline"} size={size} color={color} />
           ),
         }}
       />
@@ -49,11 +54,7 @@ export default function Layout() {
         options={{
           tabBarLabel: "订单",
           tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? "pricetag" : "pricetag-outline"}
-              size={size}
-              color={color}
-            />
+            <Ionicons name={focused ? "pricetag" : "pricetag-outline"} size={size} color={color} />
           ),
         }}
       />
@@ -62,11 +63,7 @@ export default function Layout() {
         options={{
           tabBarLabel: "设置",
           tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? "settings" : "settings-outline"}
-              size={size}
-              color={color}
-            />
+            <Ionicons name={focused ? "settings" : "settings-outline"} size={size} color={color} />
           ),
         }}
       />

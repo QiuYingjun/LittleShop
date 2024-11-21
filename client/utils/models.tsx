@@ -96,7 +96,7 @@ export type InventoryRecordAttributes = {
   supplier_id: number;
   quantity: number;
   purchase_price: number;
-  purchase_time: Date;
+  purchase_time?: Date;
 };
 export type CustomerAttributes = {
   id?: number;

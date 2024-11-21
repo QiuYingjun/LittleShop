@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Dialog } from "@rneui/themed";
+import { Input, Dialog, Button } from "@rneui/themed";
 
 interface SaveRecordModalType {
   visible: boolean;
@@ -48,14 +48,16 @@ export default function SaveRecordModal(props: SaveRecordModalType) {
           );
         })}
         <Dialog.Actions>
-          <Dialog.Button
+          <Button
             title="保存"
+            type="clear"
             onPress={() => {
               props.onSave(fields, props.id);
             }}
           />
-          <Dialog.Button
+          <Button
             title="取消"
+            type="clear"
             onPress={() => {
               props.onCancel();
             }}

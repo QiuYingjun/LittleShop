@@ -1,7 +1,7 @@
 import SaveRecordModal from "@/components/SaveRecordModal";
 import { Product, ProductAttributes } from "@/utils/models";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ToastAndroid, FlatList, ActivityIndicator } from "react-native";
+import { ToastAndroid, FlatList, ActivityIndicator, View } from "react-native";
 import { useNavigation } from "expo-router";
 import { Button, ListItem, Image, Text } from "@rneui/themed";
 import { useFocusEffect } from "@react-navigation/native";
@@ -145,20 +145,26 @@ export default function ProductScreen() {
                 setShowModal(true);
               }}
             >
-              <Image
-                style={{
-                  aspectRatio: 1,
-                  height: "100%",
-                  flex: 1,
-                }}
-                source={{ uri: item.image_url }}
-                PlaceholderContent={<ActivityIndicator />}
-              />
+              <View style={{ width: 50, height: 50, display: "flex" }}>
+                <Image
+                  style={{
+                    aspectRatio: 1,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  source={{ uri: item.image_url }}
+                  PlaceholderContent={<ActivityIndicator />}
+                />
+              </View>
               <ListItem.Content>
-                <ListItem.Title style={{ fontSize: 20 }}>{item.name}</ListItem.Title>
+                <ListItem.Title style={{ fontSize: 20, paddingBottom: 5 }}>
+                  {item.name} {item.size}
+                </ListItem.Title>
+                {item.description && (
+                  <ListItem.Subtitle style={{ fontSize: 15 }}>{item.description}</ListItem.Subtitle>
+                )}
               </ListItem.Content>
-              <ListItem.Title>{item.size}</ListItem.Title>
-              <ListItem.Chevron />
+              <ListItem.Chevron size={30} />
             </ListItem.Swipeable>
           );
         }}
