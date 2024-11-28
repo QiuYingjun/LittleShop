@@ -121,7 +121,7 @@ export type SalesRecordAttributes = {
 };
 export type InventorySummaryAttributes = {
   product_id: number;
-  product_name: number;
+  product_name: string;
   total_received: number;
   total_sold: number;
   current_stock: number;

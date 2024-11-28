@@ -64,9 +64,8 @@ export default function InventoryRecordItem({
         {product ? (
           <Image
             style={{
+              objectFit: "contain",
               aspectRatio: 1,
-              width: "100%",
-              height: "100%",
             }}
             source={{ uri: product?.image_url }}
             PlaceholderContent={<ActivityIndicator />}
@@ -78,8 +77,12 @@ export default function InventoryRecordItem({
 
       <ListItem.Content>
         {product ? (
-          <ListItem.Title style={{ fontSize: 20, paddingBottom: 5 }}>
-            {product?.name} {product.size}
+          <ListItem.Title>
+            <View>
+              <Text>
+                {product?.name} {product.size}
+              </Text>
+            </View>
           </ListItem.Title>
         ) : (
           <Skeleton animation="pulse" width={"80%"} height={20}></Skeleton>
@@ -97,10 +100,10 @@ export default function InventoryRecordItem({
       </ListItem.Content>
       {product ? (
         <ListItem.Content style={{ display: "flex", alignItems: "flex-end" }}>
-          <ListItem.Title style={{ fontSize: 16, fontWeight: "bold" }}>
+          <ListItem.Title style={{ fontSize: 18, fontWeight: "bold" }}>
             ￥{item.purchase_price}
           </ListItem.Title>
-          <ListItem.Subtitle style={{ fontSize: 12 }}>x {item.quantity}</ListItem.Subtitle>
+          <ListItem.Subtitle style={{ fontSize: 16 }}>x {item.quantity}</ListItem.Subtitle>
         </ListItem.Content>
       ) : (
         <Skeleton animation="pulse" width={20} height={20}></Skeleton>

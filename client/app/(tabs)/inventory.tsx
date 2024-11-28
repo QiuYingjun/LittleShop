@@ -23,9 +23,6 @@ export default function InventoryScreen() {
   const [supplierOpen, setSupplierOpen] = useState(false);
   const loadRecords = () => {
     InventoryRecord.all().then((res) => {
-      res.forEach((it) => {
-        console.log(26, it);
-      });
       setRecords(res);
     });
   };
@@ -122,6 +119,8 @@ export default function InventoryScreen() {
               icon: () => (
                 <Image
                   style={{
+                    objectFit: "contain",
+                    aspectRatio: 1,
                     width: 30,
                     height: 30,
                   }}

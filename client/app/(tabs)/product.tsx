@@ -148,9 +148,8 @@ export default function ProductScreen() {
               <View style={{ width: 50, height: 50, display: "flex" }}>
                 <Image
                   style={{
+                    objectFit: "contain",
                     aspectRatio: 1,
-                    width: "100%",
-                    height: "100%",
                   }}
                   source={{ uri: item.image_url }}
                   PlaceholderContent={<ActivityIndicator />}
